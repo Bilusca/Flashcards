@@ -7,5 +7,5 @@ export const Input = styled.TextInput`
     padding: 10px;
     font-size: 20px;
     color: ${red};
-    width: 250px;
+    width: 100%;
 ` 
