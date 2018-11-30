@@ -13,18 +13,18 @@ export default class NewDeck extends Component {
   };
 
   onSubmitDeck = () => {
-    const {deck} = this.state;
+    const { deck } = this.state;
     const objectToSubmit = {
       [deck]: {
         title: deck,
-        questions: []
-      }
+        questions: [],
+      },
     };
 
     submitDeck(objectToSubmit);
-    alert(`Deck created: ${deck}`);
+    alert(`Deck created.`);
     this.props.navigation.navigate('Decks');
-    this.setState({deck : ''});
+    this.setState({ deck: '' });
   };
 
   render() {

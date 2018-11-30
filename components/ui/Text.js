@@ -1,11 +1,14 @@
 import styled, { css } from 'styled-components/native';
-import { red } from './_colors';
+import { red, blue } from './_colors';
 
 export const Text = styled.Text`
     font-size: ${props => props.size ? props.size + 'px' : '18px'};
     ${({redText}) => redText && css`
         color: ${red}
-    `}
+    `};
+    ${({blueText}) => blueText && css`
+        color: ${blue}
+    `};
     ${props => props.center && css`
         text-align: center;
     `};
