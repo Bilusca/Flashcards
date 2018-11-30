@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import {addDeck} from '../actions/deckActions'
 import { KeyboardAvoidingView } from 'react-native';
 import PageView from '../components/ui/PageView';
 import { Text } from '../components/ui/Text';
@@ -7,12 +9,13 @@ import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
 import { submitDeck } from '../config/api';
 
-export default class NewDeck extends Component {
+class NewDeck extends Component {
   state = {
     deck: '',
   };
 
   onSubmitDeck = () => {
+    const {dispatch} = this.props
     const { deck } = this.state;
     const objectToSubmit = {
       [deck]: {
@@ -21,8 +24,8 @@ export default class NewDeck extends Component {
       },
     };
 
+    dispatch(addDeck(objectToSubmit))
     submitDeck(objectToSubmit);
-    alert(`Deck created.`);
     this.props.navigation.navigate('Decks');
     this.setState({ deck: '' });
   };
@@ -56,3 +59,5 @@ export default class NewDeck extends Component {
     );
   }
 }
+
+export default connect()(NewDeck);

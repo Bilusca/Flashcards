@@ -5,9 +5,9 @@ import { AntDesign } from '@expo/vector-icons';
 import { red } from '../components/ui/_colors';
 import { Button } from '../components/ui/Button';
 
-export default function NoDecks({ onPress }) {
+export default function NoDecks({ onPress, style }) {
   return (
-    <Card>
+    <Card style={style}>
       <AntDesign name="meh" size={80} color={red} />
       <Text size={25} center>
         Oh no...

@@ -5,4 +5,5 @@ export const ListItem = styled.TouchableOpacity`
     border-radius: 5px;
     padding: 20px;
     align-self: stretch;
+    margin-bottom: 20px;
 `;
