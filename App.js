@@ -3,11 +3,12 @@ import { StatusBar } from 'react-native';
 import MainNavigation from './config/routes';
 import { StatusWrapper } from './components/ui/StatusWrapper';
 import PageView from './components/ui/PageView';
-import { createStore } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
+import logger from 'redux-logger';
 import { Provider } from 'react-redux';
 import { rootReducer } from './reducers';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(logger));
 
 console.disableYellowBox = true;
 

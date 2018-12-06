@@ -18,6 +18,14 @@ export function getDecksResult() {
   );
 }
 
+export function submitQuestion(deck, question, answer) {
+  getDecksResult().then(results => {
+    results[deck].questions.push({question, answer});
+
+    return AsyncStorage.setItem(STORAGE_DECK_KEY, JSON.stringify(results));
+  })
+}
+
 export function clearData() {
   return AsyncStorage.clear();
 }

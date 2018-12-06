@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import PageView from '../components/ui/PageView';
 import { View, StyleSheet } from 'react-native';
 import { Text } from '../components/ui/Text';
@@ -7,11 +8,18 @@ import { Button } from '../components/ui/Button';
 import { RoundButton } from '../components/ui/RoundButton';
 import { AntDesign } from '@expo/vector-icons';
 import { red } from '../components/ui/_colors';
+import { getDeck } from '../actions/deckActions';
 
 class Deck extends Component {
-  render() {
-    const { navigation } = this.props;
+  componentDidMount() {
+    const { navigation, getDeck } = this.props;
     const item = navigation.getParam('item');
+
+    getDeck(item)
+  }
+
+  render() {
+    const { navigation, deck } = this.props;
     return (
       <PageView style={{ padding: 20 }}>
         <RoundButton onPress={() => navigation.goBack()}>
@@ -24,10 +32,10 @@ class Deck extends Component {
         </RoundButton>
         <Card style={{ flex: 1, justifyContent: 'space-between' }}>
           <Text size={50} center redText bold>
-            {item}
+            {deck.title}
           </Text>
           <Text size={30} center redText>
-            {0} questions
+            {deck.questions && deck.questions.length} cards
           </Text>
           <View style={styles.container}>
             <Button style={{ marginBottom: 20 }}>
@@ -39,7 +47,7 @@ class Deck extends Component {
               blueButton
               onPress={() =>
                 navigation.navigate('NewQuestion', {
-                  item,
+                  item: deck.title,
                 })
               }
             >
@@ -61,4 +69,14 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Deck;
+function mapStateToProps({ deckReducer }) {
+  return {
+    deck: deckReducer.deck,
+  };
+}
+
+function mapDispatchToProps(dispatch) {
+  return { getDeck: deck => dispatch(getDeck(deck)) };
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Deck);

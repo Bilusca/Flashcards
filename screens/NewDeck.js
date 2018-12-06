@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
-import {addDeck} from '../actions/deckActions'
+import { Alert, Keyboard } from 'react-native';
+import { connect } from 'react-redux';
+import { addDeck } from '../actions/deckActions';
 import { KeyboardAvoidingView } from 'react-native';
 import PageView from '../components/ui/PageView';
 import { Text } from '../components/ui/Text';
@@ -15,8 +16,15 @@ class NewDeck extends Component {
   };
 
   onSubmitDeck = () => {
-    const {dispatch} = this.props
+    const { dispatch, navigation } = this.props;
     const { deck } = this.state;
+
+    if (!deck) {
+        return Alert.alert('Alert', 'Please, choose the name of the deck.', [
+          { text: 'Ok'}
+        ]);
+    }
+
     const objectToSubmit = {
       [deck]: {
         title: deck,
@@ -24,10 +32,13 @@ class NewDeck extends Component {
       },
     };
 
-    dispatch(addDeck(objectToSubmit))
+    dispatch(addDeck(objectToSubmit));
     submitDeck(objectToSubmit);
-    this.props.navigation.navigate('Decks');
+    Keyboard.dismiss();
     this.setState({ deck: '' });
+    navigation.navigate('Decks', {
+      render: true,
+    });
   };
 
   render() {

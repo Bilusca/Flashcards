@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { StyleSheet, FlatList } from 'react-native';
+import { StyleSheet, FlatList, TouchableOpacity, Animated } from 'react-native';
 import { connect } from 'react-redux';
 import { addDeck } from '../actions/deckActions';
 import PageView from '../components/ui/PageView';
@@ -10,9 +10,15 @@ import { ListItem } from '../components/ui/ListItem';
 import { AppLoading } from 'expo';
 
 class Decks extends Component {
-  state = {
-    ready: false,
-  };
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      ready: false,
+      _opacity: new Animated.Value(0),
+      _translate: new Animated.ValueXY({ x: 0, y: 100 }),
+    };
+  }
 
   componentDidMount() {
     this.loadData();
@@ -21,13 +27,28 @@ class Decks extends Component {
   loadData = () => {
     getDecksResult()
       .then(result => this.props.addDeck(result))
-      .then(() => this.setState({ ready: true }))
-      .then(() => this.setState({ ready: true }));
+      .then(() => {
+        this.setState({ ready: true });
+
+        Animated.parallel([
+          Animated.spring(this.state._translate.y, {
+            toValue: 0,
+            speed: 2,
+            bounciness: 0,
+            useNativeDriver: true,
+          }),
+          Animated.timing(this.state._opacity, {
+            toValue: 1,
+            duration: 700,
+            useNativeDriver: true,
+          }),
+        ]).start();
+      });
   };
 
   render() {
     const { navigation, decks } = this.props;
-    const { ready } = this.state;
+    const { ready, _opacity, _translate } = this.state;
 
     if (!ready) {
       return (
@@ -40,7 +61,13 @@ class Decks extends Component {
     if (!Object.keys(decks).length) {
       return (
         <PageView style={style.pageCenter}>
-          <NoDecks onPress={() => navigation.navigate('NewDeck')} />
+          <NoDecks
+            animatedValues={{
+              transform: [..._translate.getTranslateTransform()],
+              opacity: _opacity,
+            }}
+            onPress={() => navigation.navigate('NewDeck')}
+          />
         </PageView>
       );
     }
@@ -51,18 +78,25 @@ class Decks extends Component {
           data={Object.keys(decks)}
           renderItem={({ item }) => (
             <ListItem
-              onPress={() =>
-                navigation.navigate('Deck', {
-                  item,
-                })
-              }
+              style={{
+                transform: [..._translate.getTranslateTransform()],
+                opacity: _opacity,
+              }}
             >
-              <Text size={35} redText bold center style={{ marginBottom: 5 }}>
-                {decks[item].title}
-              </Text>
-              <Text size={15} redText center style={{ marginBottom: 0 }}>
-                {decks[item].questions.length} cards
-              </Text>
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('Deck', {
+                    item,
+                  })
+                }
+              >
+                <Text size={35} redText bold center style={{ marginBottom: 5 }}>
+                  {decks[item].title}
+                </Text>
+                <Text size={15} redText center style={{ marginBottom: 0 }}>
+                  {decks[item].questions.length} cards
+                </Text>
+              </TouchableOpacity>
             </ListItem>
           )}
         />
@@ -79,8 +113,8 @@ const style = StyleSheet.create({
   },
 });
 
-function mapStateToProps({ decks }) {
-  return { decks };
+function mapStateToProps({ deckReducer }) {
+  return { decks: deckReducer.decks };
 }
 
 function mapDispatchToProps(dispatch) {
