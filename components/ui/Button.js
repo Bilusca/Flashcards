@@ -11,5 +11,10 @@ export const Button = styled.TouchableOpacity`
     blueButton &&
     css`
       border-color: ${blue};
-    `}
+    `};
+  ${({ noBorder }) =>
+    noBorder &&
+    css`
+      border: 0;
+    `};
 `;

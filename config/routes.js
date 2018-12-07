@@ -6,6 +6,7 @@ import Deck from '../screens/Deck';
 import NewDeck from '../screens/NewDeck';
 import { MaterialCommunityIcons, Ionicons } from '@expo/vector-icons';
 import NewQuestion from '../screens/NewQuestion';
+import Quiz from '../screens/Quiz';
 
 const TabNavigator = createMaterialBottomTabNavigator(
   {
@@ -67,6 +68,9 @@ const MainNavigation = createStackNavigator(
     },
     NewQuestion: {
       screen: NewQuestion,
+    },
+    Quiz: {
+      screen: Quiz,
     },
   },
   {

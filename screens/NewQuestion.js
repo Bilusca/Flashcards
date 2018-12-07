@@ -22,7 +22,7 @@ class NewQuestion extends Component {
   submitQuestion() {
     const { question, answer } = this.state;
     const item = this.props.navigation.getParam('item');
-    const { addCard } = this.props;
+    const { addCard, navigation } = this.props;
 
     if (!question) {
       return Alert.alert('Alert', 'Please, create a question.', [
@@ -42,11 +42,12 @@ class NewQuestion extends Component {
       answer: '',
       question: '',
     });
+
+    return navigation.goBack();
   }
 
   render() {
     const { navigation } = this.props;
-    const { question, answer } = this.state;
     const item = navigation.getParam('item');
 
     return (

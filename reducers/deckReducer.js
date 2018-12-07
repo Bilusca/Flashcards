@@ -18,15 +18,23 @@ export function deckReducer(state = INITIAL_STATE, action) {
         deck: state.decks[action.deck],
       };
     case ADD_CARD:
-      return {
-        ...state,
+      const obj = {
+        deck: {
+          ...state.deck,
+          questions: state.deck.questions.concat(action.question),
+        },
         decks: {
+          ...state.decks,
           [action.deck]: {
-            ...[action.deck],
-            questions: [action.deck].questions.concat(action.question),
+            ...state.decks[action.deck],
+            questions: state.decks[action.deck].questions.concat(
+              action.question
+            ),
           },
         },
       };
+      console.log(obj);
+      return obj;
     default:
       return state;
   }

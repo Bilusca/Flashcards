@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PageView from '../components/ui/PageView';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Alert } from 'react-native';
 import { Text } from '../components/ui/Text';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
@@ -15,7 +15,23 @@ class Deck extends Component {
     const { navigation, getDeck } = this.props;
     const item = navigation.getParam('item');
 
-    getDeck(item)
+    getDeck(item);
+  }
+
+  goToQuiz() {
+    const { deck, navigation } = this.props;
+
+    if (deck.questions.length === 0) {
+      return Alert.alert(
+        'Oh no',
+        "You don't have questions, please, create one.",
+        [{ text: 'Ok' }]
+      );
+    }
+
+    navigation.navigate('Quiz', {
+      item: deck.title,
+    });
   }
 
   render() {
@@ -38,7 +54,10 @@ class Deck extends Component {
             {deck.questions && deck.questions.length} cards
           </Text>
           <View style={styles.container}>
-            <Button style={{ marginBottom: 20 }}>
+            <Button
+              style={{ marginBottom: 20 }}
+              onPress={() => this.goToQuiz()}
+            >
               <Text style={{ marginBottom: 0 }} center size={20} redText bold>
                 Quiz
               </Text>
@@ -79,4 +98,7 @@ function mapDispatchToProps(dispatch) {
   return { getDeck: deck => dispatch(getDeck(deck)) };
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Deck);
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(Deck);
