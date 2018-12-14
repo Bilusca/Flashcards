@@ -12,6 +12,7 @@ import { Text } from '../components/ui/Text';
 class Quiz extends Component {
   state = {
     _rotate: new Animated.Value(0),
+    _opacity: new Animated.Value(0),
     questionIndex: 0,
     showAnswer: false,
     quizLength: 0,
@@ -24,23 +25,56 @@ class Quiz extends Component {
   }
 
   flipCard() {
+    const { _rotate, _opacity } = this.state;
+
+    Animated.parallel([
+      Animated.timing(_rotate, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.timing(_opacity, {
+        toValue: 1,
+        duration: 450,
+        useNativeDriver: true,
+      }),
+      Animated.timing(_opacity, {
+        toValue: 2,
+        duration: 450,
+        useNativeDriver: true,
+      }),
+    ]).start();
+
+    this.setState({
+      showAnswer: true,
+    });
+  }
+
+  reflipCard() {
     const { _rotate } = this.state;
 
     Animated.timing(_rotate, {
-      toValue: 1,
+      toValue: 2,
       duration: 600,
       useNativeDriver: true,
     }).start(() => {
-      this.setState({
-        showAnswer: true,
-      });
+      _rotate.setValue(0);
+    });
+
+    this.setState({
+      showAnswer: false,
     });
   }
 
   renderQuestion(index) {
     const quiz = this.props.questions[index];
+    const { _opacity } = this.state;
+    const opacity = _opacity.interpolate({
+      inputRange: [0, 1],
+      outputRange: [1, 0],
+    });
     return (
-      <View>
+      <Animated.View style={{ opacity }}>
         <Text center size={35} redText>
           {quiz.question}
         </Text>
@@ -49,15 +83,21 @@ class Quiz extends Component {
             Show answer
           </Text>
         </Button>
-      </View>
+      </Animated.View>
     );
   }
 
   renderAnswer(index) {
     const quiz = this.props.questions[index];
+    const { _opacity } = this.state;
+    const opacity = _opacity.interpolate({
+      inputRange: [1, 2],
+      outputRange: [0, 1],
+    });
     return (
-      <View
+      <Animated.View
         style={{
+          opacity,
           transform: [{ rotateY: '180deg' }],
           width: '100%',
         }}
@@ -65,44 +105,26 @@ class Quiz extends Component {
         <Text center size={35} redText>
           {quiz.answer}
         </Text>
-        <View
-          style={{
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-          }}
-        >
-          <RoundButton
-            style={{
-              borderColor: '#dedede',
-              borderWidth: 1,
-              marginBottom: 0,
-              elevation: 2,
-            }}
-            onPress={() => this.nextQuestion(index)}
-          >
-            <AntDesign name="close" size={20} color={red} />
-          </RoundButton>
-          <RoundButton
-            style={{
-              borderColor: '#dedede',
-              borderWidth: 1,
-              marginBottom: 0,
-              elevation: 2,
-            }}
-            onPress={() => this.nextQuestion(index)}
-          >
-            <AntDesign name="check" size={20} color={'#45ab7e'} />
-          </RoundButton>
-        </View>
-      </View>
+        <Button noBorder onPress={() => this.reflipCard()}>
+          <Text size={20} redText center style={{ marginBottom: 0 }}>
+            Show question
+          </Text>
+        </Button>
+      </Animated.View>
     );
   }
 
   nextQuestion(index) {
-    this.setState(prevState => ({
-      questionIndex: prevState++,
+    const { _rotate, quizLength } = this.state;
+
+    if (index + 1 === quizLength) return;
+
+    this.setState({
+      questionIndex: index + 1,
       showAnswer: false,
-    }));
+    });
+
+    _rotate.setValue(0);
   }
 
   render() {
@@ -110,8 +132,8 @@ class Quiz extends Component {
     const { navigation } = this.props;
 
     const interpolateValue = _rotate.interpolate({
-      inputRange: [0, 1],
-      outputRange: ['0deg', '180deg'],
+      inputRange: [0, 1, 2],
+      outputRange: ['0deg', '180deg', '0deg'],
     });
 
     return (
@@ -137,6 +159,36 @@ class Quiz extends Component {
             ? this.renderAnswer(questionIndex)
             : this.renderQuestion(questionIndex)}
         </Card>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'space-between',
+            marginTop: 20,
+          }}
+        >
+          <RoundButton
+            style={{
+              borderColor: '#dedede',
+              borderWidth: 1,
+              marginBottom: 0,
+              elevation: 1,
+            }}
+            onPress={() => this.nextQuestion(questionIndex)}
+          >
+            <AntDesign name="close" size={20} color={red} />
+          </RoundButton>
+          <RoundButton
+            style={{
+              borderColor: '#dedede',
+              borderWidth: 1,
+              marginBottom: 0,
+              elevation: 1,
+            }}
+            onPress={() => this.nextQuestion(questionIndex)}
+          >
+            <AntDesign name="check" size={20} color={'#45ab7e'} />
+          </RoundButton>
+        </View>
       </PageView>
     );
   }
