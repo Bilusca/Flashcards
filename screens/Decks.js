@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, FlatList, TouchableOpacity, Animated } from 'react-native';
 import { connect } from 'react-redux';
-import { addDeck } from '../actions/deckActions';
+import { addDeck, getDecks } from '../actions/deckActions';
 import PageView from '../components/ui/PageView';
 import NoDecks from '../components/NoDecks';
 import { getDecksResult, clearData, setLocalNotification } from '../config/api';
@@ -28,6 +28,7 @@ class Decks extends Component {
   loadData = () => {
     getDecksResult()
       .then(result => this.props.addDeck(result))
+      .then(() => this.props.getDecks())
       .then(() => {
         this.setState({ ready: true });
 
@@ -50,6 +51,8 @@ class Decks extends Component {
   render() {
     const { navigation, decks } = this.props;
     const { ready, _opacity, _translate } = this.state;
+
+    console.log(decks);
 
     if (!ready) {
       return (
@@ -75,32 +78,40 @@ class Decks extends Component {
 
     return (
       <PageView style={{ padding: 20 }}>
-        <FlatList
-          data={Object.keys(decks)}
-          renderItem={({ item }) => (
-            <ListItem
-              style={{
-                transform: [..._translate.getTranslateTransform()],
-                opacity: _opacity,
-              }}
-            >
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Deck', {
-                    item,
-                  })
-                }
+        {Object.keys(decks).length > 0 && (
+          <FlatList
+            data={Object.keys(decks)}
+            renderItem={({ item }) => (
+              <ListItem
+                style={{
+                  transform: [..._translate.getTranslateTransform()],
+                  opacity: _opacity,
+                }}
               >
-                <Text size={35} redText bold center style={{ marginBottom: 5 }}>
-                  {decks[item].title}
-                </Text>
-                <Text size={15} redText center style={{ marginBottom: 0 }}>
-                  {decks[item].questions.length} cards
-                </Text>
-              </TouchableOpacity>
-            </ListItem>
-          )}
-        />
+                <TouchableOpacity
+                  onPress={() =>
+                    navigation.navigate('Deck', {
+                      deck: item,
+                    })
+                  }
+                >
+                  <Text
+                    size={35}
+                    redText
+                    bold
+                    center
+                    style={{ marginBottom: 5 }}
+                  >
+                    {decks[item].title}
+                  </Text>
+                  <Text size={15} redText center style={{ marginBottom: 0 }}>
+                    {decks[item].questions.length} cards
+                  </Text>
+                </TouchableOpacity>
+              </ListItem>
+            )}
+          />
+        )}
       </PageView>
     );
   }
@@ -121,6 +132,7 @@ function mapStateToProps({ deckReducer }) {
 function mapDispatchToProps(dispatch) {
   return {
     addDeck: deck => dispatch(addDeck(deck)),
+    getDecks: () => dispatch(getDecks()),
   };
 }
 

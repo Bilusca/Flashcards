@@ -20,14 +20,14 @@ class NewDeck extends Component {
     const { deck } = this.state;
 
     if (!deck) {
-        return Alert.alert('Alert', 'Please, choose the name of the deck.', [
-          { text: 'Ok'}
-        ]);
+      return Alert.alert('Alert', 'Please, choose the name of the deck.', [
+        { text: 'Ok' },
+      ]);
     }
 
     const objectToSubmit = {
       [deck]: {
-        title: deck,
+        title: deck.trim(),
         questions: [],
       },
     };
@@ -36,8 +36,8 @@ class NewDeck extends Component {
     submitDeck(objectToSubmit);
     Keyboard.dismiss();
     this.setState({ deck: '' });
-    navigation.navigate('Decks', {
-      render: true,
+    navigation.navigate('Deck', {
+      deck,
     });
   };
 

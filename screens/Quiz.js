@@ -96,6 +96,15 @@ class Quiz extends Component {
     _rotate.setValue(0);
   }
 
+  restartQuiz() {
+    this.setState({
+      showResult: false,
+      questionIndex: 0,
+      correct: 0,
+      incorrect: 0,
+    });
+  }
+
   goBack() {
     const { correct, incorrect } = this.state;
     const { navigation } = this.props;
@@ -136,10 +145,10 @@ class Quiz extends Component {
         >
           <Button
             style={{ marginBottom: 20 }}
-            onPress={() => this.props.navigation.goBack()}
+            onPress={() => this.restartQuiz()}
           >
             <Text style={{ marginBottom: 0 }} center size={20} redText bold>
-              Try Again
+              Restart Quiz
             </Text>
           </Button>
           <Button

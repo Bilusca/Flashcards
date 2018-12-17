@@ -1,4 +1,4 @@
-import { ADD_DECK, GET_DECK, ADD_CARD } from '../types';
+import { ADD_DECK, GET_DECK, ADD_CARD, GET_DECKS } from '../types';
 
 const INITIAL_STATE = {
   decks: {},
@@ -12,6 +12,8 @@ export function deckReducer(state = INITIAL_STATE, action) {
         ...state,
         decks: Object.assign(state.decks, action.deck),
       };
+    case GET_DECKS:
+      return state;
     case GET_DECK:
       return {
         ...state,

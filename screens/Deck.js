@@ -13,9 +13,9 @@ import { getDeck } from '../actions/deckActions';
 class Deck extends Component {
   componentDidMount() {
     const { navigation, getDeck } = this.props;
-    const item = navigation.getParam('item');
+    const deck = navigation.getParam('deck');
 
-    getDeck(item);
+    getDeck(deck);
   }
 
   goToQuiz() {
@@ -38,7 +38,9 @@ class Deck extends Component {
     const { navigation, deck } = this.props;
     return (
       <PageView style={{ padding: 20 }}>
-        <RoundButton onPress={() => navigation.goBack()}>
+        <RoundButton
+          onPress={() => navigation.navigate('Decks', { reload: true })}
+        >
           <AntDesign
             name="left"
             size={20}

@@ -1,9 +1,15 @@
-import { ADD_DECK, GET_DECK, ADD_CARD } from '../types';
+import { ADD_DECK, GET_DECK, ADD_CARD, GET_DECKS } from '../types';
 
 export function addDeck(deck) {
   return {
     type: ADD_DECK,
     deck,
+  };
+}
+
+export function getDecks() {
+  return {
+    type: GET_DECKS,
   };
 }
 
