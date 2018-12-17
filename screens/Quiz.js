@@ -12,10 +12,11 @@ import { Text } from '../components/ui/Text';
 class Quiz extends Component {
   state = {
     _rotate: new Animated.Value(0),
-    _opacity: new Animated.Value(0),
     questionIndex: 0,
     showAnswer: false,
     quizLength: 0,
+    correct: 0,
+    incorrect: 0,
   };
 
   componentDidMount() {
@@ -25,25 +26,13 @@ class Quiz extends Component {
   }
 
   flipCard() {
-    const { _rotate, _opacity } = this.state;
+    const { _rotate } = this.state;
 
-    Animated.parallel([
-      Animated.timing(_rotate, {
-        toValue: 1,
-        duration: 600,
-        useNativeDriver: true,
-      }),
-      Animated.timing(_opacity, {
-        toValue: 1,
-        duration: 450,
-        useNativeDriver: true,
-      }),
-      Animated.timing(_opacity, {
-        toValue: 2,
-        duration: 450,
-        useNativeDriver: true,
-      }),
-    ]).start();
+    Animated.timing(_rotate, {
+      toValue: 1,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
 
     this.setState({
       showAnswer: true,
@@ -55,7 +44,7 @@ class Quiz extends Component {
 
     Animated.timing(_rotate, {
       toValue: 2,
-      duration: 600,
+      duration: 300,
       useNativeDriver: true,
     }).start(() => {
       _rotate.setValue(0);
@@ -68,13 +57,8 @@ class Quiz extends Component {
 
   renderQuestion(index) {
     const quiz = this.props.questions[index];
-    const { _opacity } = this.state;
-    const opacity = _opacity.interpolate({
-      inputRange: [0, 1],
-      outputRange: [1, 0],
-    });
     return (
-      <Animated.View style={{ opacity }}>
+      <View>
         <Text center size={35} redText>
           {quiz.question}
         </Text>
@@ -83,21 +67,16 @@ class Quiz extends Component {
             Show answer
           </Text>
         </Button>
-      </Animated.View>
+      </View>
     );
   }
 
   renderAnswer(index) {
     const quiz = this.props.questions[index];
-    const { _opacity } = this.state;
-    const opacity = _opacity.interpolate({
-      inputRange: [1, 2],
-      outputRange: [0, 1],
-    });
+
     return (
-      <Animated.View
+      <View
         style={{
-          opacity,
           transform: [{ rotateY: '180deg' }],
           width: '100%',
         }}
@@ -110,12 +89,12 @@ class Quiz extends Component {
             Show question
           </Text>
         </Button>
-      </Animated.View>
+      </View>
     );
   }
 
-  nextQuestion(index) {
-    const { _rotate, quizLength } = this.state;
+  submitQuestion(index, correctOrIncorrect) {
+    const { _rotate, quizLength, correct, incorrect } = this.state;
 
     if (index + 1 === quizLength) return;
 
@@ -124,7 +103,17 @@ class Quiz extends Component {
       showAnswer: false,
     });
 
+    if (correctOrIncorrect) {
+      this.setState(state => ({ correct: state + 1 }));
+    } else {
+      this.setState(state => ({ incorrect: state + 1 }));
+    }
+
     _rotate.setValue(0);
+
+    if (correct + incorrect === quizLength) {
+      alert('FOI');
+    }
   }
 
   render() {
@@ -173,7 +162,7 @@ class Quiz extends Component {
               marginBottom: 0,
               elevation: 1,
             }}
-            onPress={() => this.nextQuestion(questionIndex)}
+            onPress={() => this.submitQuestion(questionIndex, false)}
           >
             <AntDesign name="close" size={20} color={red} />
           </RoundButton>
@@ -184,7 +173,7 @@ class Quiz extends Component {
               marginBottom: 0,
               elevation: 1,
             }}
-            onPress={() => this.nextQuestion(questionIndex)}
+            onPress={() => this.submitQuestion(questionIndex, true)}
           >
             <AntDesign name="check" size={20} color={'#45ab7e'} />
           </RoundButton>
