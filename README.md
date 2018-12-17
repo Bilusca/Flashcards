@@ -6,15 +6,15 @@ O projeto de conclusão do módulo 3, sobre React Native, consiste em um aplicat
 
 Primeiro você terá que clonar esse repositório:
 
-    ```$ git clone https://github.com/Bilusca/Flashcards.git```
+    $ git clone https://github.com/Bilusca/Flashcards.git
 
 Depois instale as dependências do projeto com o comando:
 
-    ```$ npm install```
+    $ npm install
 
 E para rodar o projeto, use o comando:
 
-    ```$ npm start```
+    $ npm start
 
 ## Dependências do projeto
 
