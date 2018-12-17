@@ -20,9 +20,8 @@ E para rodar o projeto, use o comando:
 
 As dependências do projeto são:
 
-- Biblioteca EXPO
-
-- Styled components
+    - Biblioteca EXPO
+    - Styled components
 
 Além das usadas normalmente para se desenvolver um App React/Redux.
 
