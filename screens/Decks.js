@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { addDeck } from '../actions/deckActions';
 import PageView from '../components/ui/PageView';
 import NoDecks from '../components/NoDecks';
-import { getDecksResult, clearData } from '../config/api';
+import { getDecksResult, clearData, setLocalNotification } from '../config/api';
 import { Text } from '../components/ui/Text';
 import { ListItem } from '../components/ui/ListItem';
 import { AppLoading } from 'expo';
@@ -21,6 +21,7 @@ class Decks extends Component {
   }
 
   componentDidMount() {
+    setLocalNotification();
     this.loadData();
   }
 

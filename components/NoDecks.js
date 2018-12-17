@@ -8,7 +8,9 @@ import { Button } from '../components/ui/Button';
 export default function NoDecks({ onPress, animatedValues }) {
   return (
     <Card style={animatedValues}>
-      <AntDesign name="meh" size={80} color={red} />
+      <Text size={80} center>
+        😮
+      </Text>
       <Text size={25} center>
         Oh no...
       </Text>
